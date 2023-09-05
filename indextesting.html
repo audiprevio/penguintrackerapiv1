@@ -1,0 +1,383 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SaveThePenguins</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        b {
+            color: #e5e5e5;
+        }
+
+        .ping-animation {
+            animation: ping 1s infinite;
+        }
+
+        @keyframes ping {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(2);
+            opacity: 0;
+        }
+}
+
+        a {
+            text-decoration: none;
+            color: #015498;
+            font-weight: medium;
+        }
+
+        a:hover {
+            color: #107;
+        }
+
+        #navbar {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background-color: white;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #map { 
+            height: 100vh; 
+            padding: 0;
+        }
+
+        .leaflet-popup-content-wrapper, .leaflet-popup-tip {
+            background: white;
+            color: #333;
+            box-shadow: 0 0px 0px #fafafa;
+            padding: 1px;
+            text-align: left;
+            border-color: aqua;
+            border: 2px;
+            border-radius: 4px;
+        }
+        .leaflet-popup-close-button {
+            display: none;
+        }
+        #info-card {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 200px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            margin: 10px;
+            z-index: 650; /* Add a higher zIndex for the card */
+        }
+
+        #info-card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #info-card p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+
+        #info-card {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 200px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 10px;
+            z-index: 650; /* Add a higher zIndex for the card */
+        }
+
+        #info-card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #info-card p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+
+
+        #info-card {
+            flex: 0 0 200px;
+            margin: 10px;
+        }
+
+
+        #map {
+            flex: 1;
+        }
+        /* navcard */
+        
+        #nav-card {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            width: 200px;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 10px;
+            z-index: 650; /* Add a higher zIndex for the card */
+        }
+
+        #nav-card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #nav-card p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+
+        #nav-card {
+            position: absolute;
+            top: 2.5%;
+            left: 50%;
+            transform: translate(-50%, -50%); /* Center the element both horizontally and vertically */
+            width: 72rem;
+            padding: 10px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 10px;
+            z-index: 650;
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+        }
+
+        #nav-card h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        #nav-card p {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+
+
+        #nav-card {
+            flex: 0 0 200px;
+            margin: 10px;
+        }
+
+        .custom-leaflet-control-layers-toggle {
+            background-image: url(images/layers.png);
+            width: 36px;
+            height: 36px;
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            display: block;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="custom-leaflet-control-layers-toggle" id="nav-card">
+        <a href="#PenguinFriends"><h4>SaveThePenguins</h4></a>
+        <b>｜</b>
+        <a href="#home">Penguin Tracker</a>
+        <a href="#news">Our Conservation Works</a>
+        <a href="#news">Support the Penguins</a>
+        <b>｜</b>
+        <a href="#contact">Contact Us</a>
+        <a href="#contact">About Us</a>
+        <b>｜</b>
+        <a href="#contact">Sign Up / Log In</a>
+    </div>
+    <div id="map"></div>
+    <!-- <div id="nav-card">
+        <h2>Navbar</h2>
+        <p>Last Position: -5857579595, 5959595</p>
+        <p>Last Updated: 29 Aug 2023, 14:95</p>
+        <p>Age at Tagging: Adult</p>
+        <p>Tagged by: Sasa (British Antarctic Group)</p>
+    </div> -->
+    <div id="info-card">
+        <button id="close-button">&times;</button>
+        <h2>Name: Skipper</h2>
+        <p>Last Position: -77.934214, 169.449121</p>
+        <p>Last Updated: 29 Aug 2023, 14:95 (updated every 12hrs) </p>
+        <p>Age at Tagging: Adult</p>
+        <p>Tagged by: Sasa (British Antarctic Survey)</p>
+    </div>
+</body>
+<script>
+var map = L.map('map', {
+    pane: 'cardPane' // Add a custom pane for the card overlay
+    }).setView([-77.84068826234282, 166.68787351282026], 10);
+
+    map.createPane('cardPane');
+    map.getPane('cardPane').style.zIndex = 650;
+
+    /*L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+});*/
+    L.tileLayer('https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'iles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012',
+        maxZoom: 8,
+        minZoom: 5
+    }).addTo(map);
+
+    var penguinIcon = L.icon({
+        iconUrl: '/src/content/pengicon.svg',
+        iconSize: [32, 32],
+        iconAnchor: [16, 32],
+        popupAnchor: [0, -30]
+    });
+
+ 
+
+    var baseIcon = L.icon({
+        iconUrl: '/src/content/base.svg',
+        iconSize: [48, 48],
+        iconAnchor: [24, 48],
+        popupAnchor: [0, -46]
+    });
+
+    var penguins = L.layerGroup();
+    //-66.282302, 110.521742
+    L.marker([-77.848848, 166.674230], {icon:baseIcon}).addTo(map).bindPopup("McMurdo Station Antarctica").openPopup();
+    L.marker([-74.698477, 164.110744], {icon:baseIcon}).addTo(map).bindPopup("Zuccheli Station Antarctica").openPopup();
+    L.marker([-66.665064, 140.008238], {icon:baseIcon}).addTo(map).bindPopup("Dumbont D'Urville Station").openPopup();
+    L.marker([-66.282302, 110.521742], {icon:baseIcon}).addTo(map).bindPopup("Dumbont D'Urville Station").openPopup();
+    var skipper = L.marker([-77.934214, 169.449121], {icon:penguinIcon}).addTo(penguins);
+    L.marker([-77.854419, 167.114012], {icon:penguinIcon}).addTo(penguins).bindPopup('Kowalski');
+    L.marker([-77.265978, 168.710413], {icon:penguinIcon}).addTo(penguins).bindPopup('Rico');
+    L.marker([-77.505806, 167.969906], {icon:penguinIcon}).addTo(penguins).bindPopup('Mauricio');
+    L.marker([-73.507257, 172.603858], {icon:penguinIcon}).addTo(penguins).bindPopup('Love');
+    L.marker([-76.353912, -176.458007], {icon:penguinIcon}).addTo(penguins).bindPopup('Private');
+    L.marker([-72.770616, 179.072816], {icon:penguinIcon}).addTo(penguins).bindPopup('Ironhide');
+    L.marker([-77.149918, 164.888580], {icon:penguinIcon}).addTo(penguins).bindPopup('Jennie');
+    // new wenk wenk
+    L.marker([-74.799317, 164.170021], {icon:penguinIcon}).addTo(penguins).bindPopup('Gunther');
+    L.marker([-73.825257, 165.664162], {icon:penguinIcon}).addTo(penguins).bindPopup('Private');
+    L.marker([-73.303074, 168.388771], {icon:penguinIcon}).addTo(penguins).bindPopup('Ironhide');
+    L.marker([-74.697810, 164.106211], {icon:penguinIcon}).addTo(penguins).bindPopup('Jennie');
+    L.marker([-77.473114, 165.416807], {icon:penguinIcon}).addTo(penguins).bindPopup('Sylvie');
+    L.marker([-76.199490, 167.859875], {icon:penguinIcon}).addTo(penguins).bindPopup('Rose');
+    L.marker([-76.166036, -173.909179], {icon:penguinIcon}).addTo(penguins).bindPopup('Ong');
+    L.marker([-78.274485, -176.187400], {icon:penguinIcon}).addTo(penguins).bindPopup('Zach');
+    L.marker([-78.631628, -177.759196], {icon:penguinIcon}).addTo(penguins).bindPopup('Staria')
+
+    //-78.274485, -176.187400
+
+
+
+
+    var overlays = {
+        "Penguins": penguins
+    };
+
+    L.control.layers(null, overlays).addTo(map);
+
+    var legend = L.control({position: 'bottomleft'});
+
+    legend.onAdd = function (map) {
+        var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<i style="background: url(/src/content/pengicon.svg) no-repeat center; width: 16px; height: 16px;"></i><span>Penguins</span><br>';
+        return div;
+    };
+
+    legend.addTo(map);
+
+function onMarkerClick() {
+  if (this === skipper) {
+    var popupContent = '<a href="#" id="info-link">Skipper 🔍</a>';
+    this.bindPopup(popupContent).openPopup();
+    this.off('click', onMarkerClick); // Remove the click event listener after the first click
+  }
+}
+
+skipper.on('click', onMarkerClick);
+
+map.on('popupopen', function() {
+  var infoLink = document.getElementById('info-link');
+  if (infoLink) {
+    infoLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      // Store the information in a global variable
+      window.infoContent = '<h2>Name: Skipper</h2>' +
+        '<p>Last Position: -5857579595, 5959595</p>' +
+        '<p>Last Updated: 29 Aug 2023, 14:95</p>' +
+        '<p>Age at Tagging: Adult</p>' +
+        '<p>Tagged by: Sasa (British Antarctic Group)</p>';
+
+      // Show the #info-card
+      var infoCard = document.getElementById('info-card');
+      infoCard.style.display = 'block';
+    });
+  }
+});
+
+map.on('popupclose', function() {
+  // Hide the #info-card
+  var infoCard = document.getElementById('info-card');
+  infoCard.style.display = 'none';
+
+  // Clear the global variable
+  window.infoContent = null;
+});
+
+var closeButton = document.getElementById('close-button');
+closeButton.addEventListener('click', function() {
+  // Hide the #info-card when the close button is clicked
+  var infoCard = document.getElementById('info-card');
+  infoCard.style.display = 'none';
+
+  // Clear the global variable
+  window.infoContent = null;
+});
+
+var closeButton = document.getElementById('close-button');
+closeButton.addEventListener('click', function() {
+    // Hide the #info-card when the close button is clicked
+    var infoCard = document.getElementById('info-card');
+    infoCard.style.display = 'none';
+
+    // Clear the global variable
+    window.infoContent = null;
+});
+
+
+</script>
+</html>
